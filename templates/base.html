@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}🍌 Banan{% endblock %}</title>
+    <title>{% block title %}Arlist{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a href="{% url 'home' %}" class="logo">🍌 Banan</a>
+            <a href="{% url 'home' %}" class="logo">arlist</a>
             <ul class="nav-links">
                 <li><a href="{% url 'course_list' %}">Курсы</a></li>
                 {% if user.is_authenticated %}
@@ -40,7 +40,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <h3>🍌 Banan</h3>
+                    <h3>arlist</h3>
                     <p>Современная платформа для онлайн-обучения. Качественные курсы от опытных преподавателей.</p>
                 </div>
                 <div>
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; {% now "Y" %} Banan. Все права защищены.</p>
+                <p>&copy; {% now "Y" %} arlist. Все права защищены.</p>
             </div>
         </div>
     </footer>

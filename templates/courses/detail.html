@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ course.title }} — Arlist{% endblock %}
+{% block title %}{{ course.title }} — Banan{% endblock %}
 {% block content %}
 <div class="course-detail">
     <div class="course-header">
@@ -19,7 +19,13 @@
                     </div>
                     <span class="progress-text">{{ completed_count }}/{{ course.lesson_count }} ({{ progress }}%)</span>
                 </div>
-                <a href="{% url 'lesson_detail' course.slug course.lessons.first.slug %}" class="btn">Продолжить обучение</a>
+                {% with first_lesson=course.lessons.all|first %}
+                    {% if first_lesson %}
+                        <a href="{% url 'lesson_detail' course.slug first_lesson.slug %}" class="btn">Продолжить обучение</a>
+                    {% else %}
+                        <span class="text-muted">Уроков пока нет</span>
+                    {% endif %}
+                {% endwith %}
             {% elif user.is_authenticated %}
                 <a href="{% url 'enroll' course.slug %}" class="btn btn-success">Записаться бесплатно</a>
             {% else %}
@@ -41,6 +47,7 @@
                         </a>
                     {% else %}
                         <span>{{ lesson.title }}</span>
+                        <span class="lesson-lock">🔒</span>
                     {% endif %}
                 </li>
             {% empty %}
