@@ -26,6 +26,13 @@ SECRET_KEY = 'django-insecure-(_)(1@6dw6)erny@d=i#bj&#wamp$g%yjx#tqxguc6jarvxen(
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+    'https://*.ngrok-free.dev',
+    'https://*.ngrok.io',
+    'http://*.ngrok.io',
+    'https://flock-smartly-motto.ngrok-free.dev',
+]
 
 
 # Application definition

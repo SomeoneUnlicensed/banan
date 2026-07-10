@@ -6,9 +6,9 @@
         <h3>{{ course.title }}</h3>
         <ul>
             {% for l in lessons %}
-                <li class="{% if l.id == lesson.id %}active{% endif %}">
+                <li class="{% if l.id == lesson.id %}active{% endif %} {% if l.id in completed_lessons %}done{% endif %}">
                     <a href="{% url 'lesson_detail' course.slug l.slug %}">
-                        <span class="lesson-num-sm">{{ forloop.counter }}</span>
+                        <span class="lesson-num-sm">{% if l.id in completed_lessons %}✓{% else %}{{ forloop.counter }}{% endif %}</span>
                         {{ l.title }}
                     </a>
                 </li>
@@ -24,12 +24,24 @@
             </div>
         {% endif %}
         <div class="content">{{ lesson.content|linebreaks }}</div>
+
+        <div class="lesson-actions">
+            <form method="post" action="{% url 'lesson_complete' course.slug lesson.slug %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">
+                    {% if lesson.id in completed_lessons %}✓ Урок пройден{% else %}Отметить как пройденный{% endif %}
+                </button>
+            </form>
+        </div>
+
         <div class="lesson-nav">
             {% if previous_lesson %}
-                <a href="{% url 'lesson_detail' course.slug previous_lesson.slug %}" class="btn">← Предыдущий урок</a>
+                <a href="{% url 'lesson_detail' course.slug previous_lesson.slug %}" class="btn btn-outline">&larr; Предыдущий</a>
+            {% else %}
+                <span></span>
             {% endif %}
             {% if next_lesson %}
-                <a href="{% url 'lesson_detail' course.slug next_lesson.slug %}" class="btn">Следующий урок →</a>
+                <a href="{% url 'lesson_detail' course.slug next_lesson.slug %}" class="btn btn-outline">Следующий &rarr;</a>
             {% endif %}
         </div>
     </div>

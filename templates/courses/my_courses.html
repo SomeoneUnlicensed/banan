@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Мои курсы — Arlist{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Мои курсы</h1>
+    <p>Продолжайте обучение</p>
+</div>
+
+<div class="my-courses">
+    {% if enrollments %}
+        <div class="my-courses-grid">
+            {% for e in enrollments %}
+                <div class="my-course-card">
+                    <h3><a href="{% url 'course_detail' e.course.slug %}">{{ e.course.title }}</a></h3>
+                    <span class="category-badge">{{ e.course.category.name }}</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ e.progress }}%"></div>
+                    </div>
+                    <div class="course-meta">
+                        <span>{{ e.completed_count }}/{{ e.lesson_count }} уроков</span>
+                        <span>{{ e.progress }}%</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Вы ещё не записаны ни на один курс.</p>
+            <a href="{% url 'course_list' %}" class="btn">Смотреть курсы</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

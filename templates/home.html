@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
-{% block title %}Banan — учись чему угодно{% endblock %}
+{% load static %}
+{% block title %}Arlist — учись чему угодно{% endblock %}
 {% block content %}
 <section class="hero">
-    <h1>Учись с Banan 🍌</h1>
-    <p>Качественные курсы от опытных преподавателей</p>
+    <div class="hero-grid"></div>
+    <h1>Учись с <span>arlist</span></h1>
+    <p>Качественные курсы от опытных преподавателей. Учитесь в своём темпе, где угодно и когда угодно.</p>
     <a href="{% url 'course_list' %}" class="btn btn-lg">Смотреть курсы</a>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-value">{{ total_courses }}+</div>
+            <div class="hero-stat-label">курсов</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-value">{{ categories.count }}</div>
+            <div class="hero-stat-label">категорий</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-value">24/7</div>
+            <div class="hero-stat-label">доступ</div>
+        </div>
+    </div>
 </section>
 
 <section class="categories">
-    <h2>Категории</h2>
+    <h2 class="section-title">Категории</h2>
     <div class="category-grid">
         {% for cat in categories %}
             <a href="{% url 'course_list' %}?category={{ cat.slug }}" class="category-card">
+                <span class="category-icon">
+                {% cycle '📚' '💻' '🎨' '🔬' '📊' '🌍' as icon %}
+                </span>
                 <h3>{{ cat.name }}</h3>
                 <span>{{ cat.course_count }} курс{{ cat.course_count|pluralize:",а,ов" }}</span>
             </a>
@@ -22,24 +41,26 @@
 </section>
 
 <section class="featured">
-    <h2>Популярные курсы</h2>
+    <h2 class="section-title">Популярные курсы</h2>
     <div class="course-grid">
         {% for course in courses %}
             <div class="course-card">
-                {% if course.thumbnail %}
-                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
-                {% else %}
-                    <div class="course-card-img-placeholder">
-                        <span>📚</span>
-                    </div>
-                {% endif %}
-                <div class="course-info">
+                <div class="course-card-image">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+                    {% else %}
+                        <div class="course-card-img-placeholder">
+                            <span>📚</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="course-card-body">
                     <span class="category-badge">{{ course.category.name }}</span>
                     <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
                     <p>{{ course.short_description }}</p>
                     <div class="course-meta">
-                        <span>📖 {{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
-                        <span class="instructor">👤 {{ course.instructor.username }}</span>
+                        <span>{{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
+                        <span>{{ course.instructor.username }}</span>
                     </div>
                 </div>
             </div>

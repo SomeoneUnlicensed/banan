@@ -1,34 +1,44 @@
 {% extends 'base.html' %}
-{% block title %}{{ course.title }} — Banan{% endblock %}
+{% block title %}{{ course.title }} — Arlist{% endblock %}
 {% block content %}
 <div class="course-detail">
     <div class="course-header">
         <span class="category-badge">{{ course.category.name }}</span>
         <h1>{{ course.title }}</h1>
-        <p class="instructor">👤 Преподаватель: {{ course.instructor.username }}</p>
+        <div class="instructor">
+            <div class="instructor-avatar">{{ course.instructor.username|first|upper }}</div>
+            {{ course.instructor.username }}
+        </div>
         <p class="course-description">{{ course.description|linebreaks }}</p>
         <div class="course-actions">
-            <span class="course-meta">📖 {{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
-            {% if user.is_authenticated %}
-                {% if is_enrolled %}
-                    <a href="{% url 'lesson_detail' course.slug course.lessons.first.slug %}" class="btn">▶ Начать обучение</a>
-                {% else %}
-                    <a href="{% url 'enroll' course.slug %}" class="btn">🚀 Записаться бесплатно</a>
-                {% endif %}
+            <span class="course-meta">{{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
+            {% if is_enrolled %}
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ progress }}%"></div>
+                    </div>
+                    <span class="progress-text">{{ completed_count }}/{{ course.lesson_count }} ({{ progress }}%)</span>
+                </div>
+                <a href="{% url 'lesson_detail' course.slug course.lessons.first.slug %}" class="btn">Продолжить обучение</a>
+            {% elif user.is_authenticated %}
+                <a href="{% url 'enroll' course.slug %}" class="btn btn-success">Записаться бесплатно</a>
             {% else %}
-                <a href="{% url 'login' %}?next={% url 'course_detail' course.slug %}" class="btn">🔑 Войти и записаться</a>
+                <a href="{% url 'login' %}?next={% url 'course_detail' course.slug %}" class="btn btn-outline">Войти и записаться</a>
             {% endif %}
         </div>
     </div>
 
     <div class="lessons">
-        <h2>📋 Программа курса</h2>
+        <h2>Программа курса</h2>
         <ul>
             {% for lesson in lessons %}
-                <li>
+                <li class="{% if lesson.id in completed_lessons %}completed{% endif %}">
                     <div class="lesson-num">{{ forloop.counter }}</div>
                     {% if is_enrolled %}
-                        <a href="{% url 'lesson_detail' course.slug lesson.slug %}">{{ lesson.title }}</a>
+                        <a href="{% url 'lesson_detail' course.slug lesson.slug %}">
+                            {{ lesson.title }}
+                            {% if lesson.id in completed_lessons %}<span class="completed-badge">✓</span>{% endif %}
+                        </a>
                     {% else %}
                         <span>{{ lesson.title }}</span>
                     {% endif %}

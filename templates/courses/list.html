@@ -1,42 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Курсы — Banan{% endblock %}
+{% block title %}Курсы — Arlist{% endblock %}
 {% block content %}
-<h1>Все курсы</h1>
+<div class="page-header">
+    <h1>Все курсы</h1>
+    <p>Выберите курс и начните обучение</p>
+</div>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" placeholder="Поиск курсов..." value="{{ query|default:'' }}">
+    {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+    <button type="submit" class="btn">Найти</button>
+</form>
 
 <div class="course-layout">
     <aside class="sidebar">
         <h3>Категории</h3>
         <ul>
-            <li><a href="{% url 'course_list' %}">Все</a></li>
+            <li><a href="{% url 'course_list' %}{% if query %}?q={{ query }}{% endif %}" {% if not current_category %}class="active"{% endif %}>Все</a></li>
             {% for cat in categories %}
-                <li><a href="{% url 'course_list' %}?category={{ cat.slug }}">{{ cat.name }} ({{ cat.course_count }})</a></li>
+                <li><a href="{% url 'course_list' %}?category={{ cat.slug }}{% if query %}&q={{ query }}{% endif %}" {% if current_category == cat.slug %}class="active"{% endif %}>{{ cat.name }} ({{ cat.course_count }})</a></li>
             {% endfor %}
         </ul>
     </aside>
 
-    <div class="course-grid">
-        {% for course in courses %}
-            <div class="course-card">
-                {% if course.thumbnail %}
-                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
-                {% else %}
-                    <div class="course-card-img-placeholder">
-                        <span>📚</span>
+    <div>
+        <div class="course-grid">
+            {% for course in courses %}
+                <div class="course-card">
+                    <div class="course-card-image">
+                        {% if course.thumbnail %}
+                            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+                        {% else %}
+                            <div class="course-card-img-placeholder">
+                                <span>📚</span>
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-                <div class="course-info">
-                    <span class="category-badge">{{ course.category.name }}</span>
-                    <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
-                    <p>{{ course.short_description }}</p>
-                    <div class="course-meta">
-                        <span>📖 {{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
-                        <span class="instructor">👤 {{ course.instructor.username }}</span>
+                    <div class="course-card-body">
+                        <span class="category-badge">{{ course.category.name }}</span>
+                        <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
+                        <p>{{ course.short_description }}</p>
+                        <div class="course-meta">
+                            <span>{{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
+                            <span>{{ course.instructor.username }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% empty %}
-            <p>Курсов не найдено.</p>
-        {% endfor %}
+            {% empty %}
+                <div class="empty-state">
+                    <p>Курсов не найдено.</p>
+                    <a href="{% url 'course_list' %}" class="btn">Сбросить фильтры</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if courses.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if courses.has_previous %}
+                <a href="?page={{ courses.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="btn btn-outline">&larr; Назад</a>
+            {% endif %}
+            <span class="page-info">Страница {{ courses.number }} из {{ courses.paginator.num_pages }}</span>
+            {% if courses.has_next %}
+                <a href="?page={{ courses.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="btn btn-outline">Вперёд &rarr;</a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
