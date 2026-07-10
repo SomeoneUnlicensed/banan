@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Arlist — учись чему угодно{% endblock %}
+{% block title %}🍌 Banan — учись чему угодно{% endblock %}
 {% block content %}
 <section class="hero">
     <div class="hero-grid"></div>
-    <h1>Учись с <span>arlist</span></h1>
+    <h1>Учись с <span>🍌 Banan</span></h1>
     <p>Качественные курсы от опытных преподавателей. Учитесь в своём темпе, где угодно и когда угодно.</p>
     <a href="{% url 'course_list' %}" class="btn btn-lg">Смотреть курсы</a>
     <div class="hero-stats">
@@ -28,9 +28,7 @@
     <div class="category-grid">
         {% for cat in categories %}
             <a href="{% url 'course_list' %}?category={{ cat.slug }}" class="category-card">
-                <span class="category-icon">
-                {% cycle '📚' '💻' '🎨' '🔬' '📊' '🌍' as icon %}
-                </span>
+                <span class="category-icon">📚</span>
                 <h3>{{ cat.name }}</h3>
                 <span>{{ cat.course_count }} курс{{ cat.course_count|pluralize:",а,ов" }}</span>
             </a>

@@ -52,7 +52,7 @@ class Enrollment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
-    completed_lessons = models.JSONField(default=list, blank=True)
+    completed_lessons = models.JSONField(default=list, blank=True, null=True)
 
     class Meta:
         unique_together = ['student', 'course']
