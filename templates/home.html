@@ -1,46 +1,50 @@
 {% extends 'base.html' %}
-{% block title %}Banan - Learn Anything{% endblock %}
+{% block title %}Banan — учись чему угодно{% endblock %}
 {% block content %}
 <section class="hero">
-    <h1>Learn with Banan 🍌</h1>
-    <p>High-quality courses taught by expert instructors</p>
-    <a href="{% url 'course_list' %}" class="btn">Browse Courses</a>
+    <h1>Учись с Banan 🍌</h1>
+    <p>Качественные курсы от опытных преподавателей</p>
+    <a href="{% url 'course_list' %}" class="btn btn-lg">Смотреть курсы</a>
 </section>
 
 <section class="categories">
-    <h2>Categories</h2>
+    <h2>Категории</h2>
     <div class="category-grid">
         {% for cat in categories %}
             <a href="{% url 'course_list' %}?category={{ cat.slug }}" class="category-card">
                 <h3>{{ cat.name }}</h3>
-                <span>{{ cat.course_count }} course{{ cat.course_count|pluralize }}</span>
+                <span>{{ cat.course_count }} курс{{ cat.course_count|pluralize:",а,ов" }}</span>
             </a>
         {% empty %}
-            <p>No categories yet.</p>
+            <p>Категорий пока нет.</p>
         {% endfor %}
     </div>
 </section>
 
 <section class="featured">
-    <h2>Featured Courses</h2>
+    <h2>Популярные курсы</h2>
     <div class="course-grid">
         {% for course in courses %}
             <div class="course-card">
                 {% if course.thumbnail %}
                     <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+                {% else %}
+                    <div class="course-card-img-placeholder">
+                        <span>📚</span>
+                    </div>
                 {% endif %}
                 <div class="course-info">
                     <span class="category-badge">{{ course.category.name }}</span>
                     <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
                     <p>{{ course.short_description }}</p>
                     <div class="course-meta">
-                        <span>{{ course.lesson_count }} lesson{{ course.lesson_count|pluralize }}</span>
-                        <span class="instructor">by {{ course.instructor.username }}</span>
+                        <span>📖 {{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
+                        <span class="instructor">👤 {{ course.instructor.username }}</span>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <p>No courses available yet.</p>
+            <p>Курсов пока нет.</p>
         {% endfor %}
     </div>
 </section>

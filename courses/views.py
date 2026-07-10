@@ -55,10 +55,18 @@ def lesson_detail(request, course_slug, lesson_slug):
     enrollment = get_object_or_404(Enrollment, student=request.user, course=course)
     lesson = get_object_or_404(Lesson, course=course, slug=lesson_slug)
     lessons = course.lessons.all()
+
+    lesson_list = list(lessons)
+    current_index = next((i for i, l in enumerate(lesson_list) if l.id == lesson.id), -1)
+    previous_lesson = lesson_list[current_index - 1] if current_index > 0 else None
+    next_lesson = lesson_list[current_index + 1] if current_index < len(lesson_list) - 1 else None
+
     return render(request, 'courses/lesson.html', {
         'course': course,
         'lesson': lesson,
         'lessons': lessons,
+        'previous_lesson': previous_lesson,
+        'next_lesson': next_lesson,
     })
 
 
@@ -66,7 +74,7 @@ def lesson_detail(request, course_slug, lesson_slug):
 def enroll(request, slug):
     course = get_object_or_404(Course, slug=slug, is_published=True)
     Enrollment.objects.get_or_create(student=request.user, course=course)
-    messages.success(request, f'You have enrolled in "{course.title}"')
+    messages.success(request, f'Вы записались на курс "{course.title}"')
     return redirect('course_detail', slug=slug)
 
 
@@ -75,7 +83,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Account created! You can now log in.')
+            messages.success(request, 'Аккаунт создан! Теперь вы можете войти.')
             return redirect('login')
     else:
         form = UserCreationForm()

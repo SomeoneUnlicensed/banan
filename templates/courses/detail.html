@@ -1,31 +1,32 @@
 {% extends 'base.html' %}
-{% block title %}{{ course.title }} - Banan{% endblock %}
+{% block title %}{{ course.title }} — Banan{% endblock %}
 {% block content %}
 <div class="course-detail">
     <div class="course-header">
-        <div>
-            <span class="category-badge">{{ course.category.name }}</span>
-            <h1>{{ course.title }}</h1>
-            <p class="instructor">by {{ course.instructor.username }}</p>
-            <p>{{ course.description }}</p>
-            <p class="course-meta">{{ course.lesson_count }} lessons</p>
+        <span class="category-badge">{{ course.category.name }}</span>
+        <h1>{{ course.title }}</h1>
+        <p class="instructor">👤 Преподаватель: {{ course.instructor.username }}</p>
+        <p class="course-description">{{ course.description|linebreaks }}</p>
+        <div class="course-actions">
+            <span class="course-meta">📖 {{ course.lesson_count }} урок{{ course.lesson_count|pluralize:",а,ов" }}</span>
             {% if user.is_authenticated %}
                 {% if is_enrolled %}
-                    <a href="{% url 'lesson_detail' course.slug course.lessons.first.slug %}" class="btn">Start Learning</a>
+                    <a href="{% url 'lesson_detail' course.slug course.lessons.first.slug %}" class="btn">▶ Начать обучение</a>
                 {% else %}
-                    <a href="{% url 'enroll' course.slug %}" class="btn">Enroll Now</a>
+                    <a href="{% url 'enroll' course.slug %}" class="btn">🚀 Записаться бесплатно</a>
                 {% endif %}
             {% else %}
-                <a href="{% url 'login' %}?next={% url 'course_detail' course.slug %}" class="btn">Login to Enroll</a>
+                <a href="{% url 'login' %}?next={% url 'course_detail' course.slug %}" class="btn">🔑 Войти и записаться</a>
             {% endif %}
         </div>
     </div>
 
     <div class="lessons">
-        <h2>Course Content</h2>
+        <h2>📋 Программа курса</h2>
         <ul>
             {% for lesson in lessons %}
                 <li>
+                    <div class="lesson-num">{{ forloop.counter }}</div>
                     {% if is_enrolled %}
                         <a href="{% url 'lesson_detail' course.slug lesson.slug %}">{{ lesson.title }}</a>
                     {% else %}
@@ -33,7 +34,7 @@
                     {% endif %}
                 </li>
             {% empty %}
-                <li>No lessons yet.</li>
+                <li>Уроков пока нет.</li>
             {% endfor %}
         </ul>
     </div>

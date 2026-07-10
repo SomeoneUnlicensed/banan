@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
+{% block title %}{{ lesson.title }} — {{ course.title }}{% endblock %}
 {% block content %}
 <div class="lesson-layout">
     <aside class="lesson-sidebar">
@@ -7,7 +7,10 @@
         <ul>
             {% for l in lessons %}
                 <li class="{% if l.id == lesson.id %}active{% endif %}">
-                    <a href="{% url 'lesson_detail' course.slug l.slug %}">{{ l.title }}</a>
+                    <a href="{% url 'lesson_detail' course.slug l.slug %}">
+                        <span class="lesson-num-sm">{{ forloop.counter }}</span>
+                        {{ l.title }}
+                    </a>
                 </li>
             {% endfor %}
         </ul>
@@ -21,6 +24,14 @@
             </div>
         {% endif %}
         <div class="content">{{ lesson.content|linebreaks }}</div>
+        <div class="lesson-nav">
+            {% if previous_lesson %}
+                <a href="{% url 'lesson_detail' course.slug previous_lesson.slug %}" class="btn">← Предыдущий урок</a>
+            {% endif %}
+            {% if next_lesson %}
+                <a href="{% url 'lesson_detail' course.slug next_lesson.slug %}" class="btn">Следующий урок →</a>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
