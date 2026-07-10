@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Courses - Banan{% endblock %}
+{% block content %}
+<h1>All Courses</h1>
+
+<div class="course-layout">
+    <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul>
+            <li><a href="{% url 'course_list' %}">All</a></li>
+            {% for cat in categories %}
+                <li><a href="{% url 'course_list' %}?category={{ cat.slug }}">{{ cat.name }} ({{ cat.course_count }})</a></li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="course-grid">
+        {% for course in courses %}
+            <div class="course-card">
+                {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+                {% endif %}
+                <div class="course-info">
+                    <span class="category-badge">{{ course.category.name }}</span>
+                    <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
+                    <p>{{ course.short_description }}</p>
+                    <div class="course-meta">
+                        <span>{{ course.lesson_count }} lesson{{ course.lesson_count|pluralize }}</span>
+                        <span class="instructor">by {{ course.instructor.username }}</span>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No courses found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

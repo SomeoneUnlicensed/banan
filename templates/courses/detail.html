@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }} - Banan{% endblock %}
+{% block content %}
+<div class="course-detail">
+    <div class="course-header">
+        <div>
+            <span class="category-badge">{{ course.category.name }}</span>
+            <h1>{{ course.title }}</h1>
+            <p class="instructor">by {{ course.instructor.username }}</p>
+            <p>{{ course.description }}</p>
+            <p class="course-meta">{{ course.lesson_count }} lessons</p>
+            {% if user.is_authenticated %}
+                {% if is_enrolled %}
+                    <a href="{% url 'lesson_detail' course.slug course.lessons.first.slug %}" class="btn">Start Learning</a>
+                {% else %}
+                    <a href="{% url 'enroll' course.slug %}" class="btn">Enroll Now</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'course_detail' course.slug %}" class="btn">Login to Enroll</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="lessons">
+        <h2>Course Content</h2>
+        <ul>
+            {% for lesson in lessons %}
+                <li>
+                    {% if is_enrolled %}
+                        <a href="{% url 'lesson_detail' course.slug lesson.slug %}">{{ lesson.title }}</a>
+                    {% else %}
+                        <span>{{ lesson.title }}</span>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>No lessons yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
